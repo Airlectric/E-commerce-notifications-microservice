@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@elastic/elasticsearch": "^8.17.0",
     "amqplib": "^0.10.5",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
