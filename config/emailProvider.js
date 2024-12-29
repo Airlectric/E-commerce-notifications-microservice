@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, text, html) => {
   try {
     const mailOptions = {
-      from: `"E-commerce Platform" <${process.env.EMAIL}>`,
+      from: `"ShopFlex E-commerce Platform" <${process.env.EMAIL}>`,
       to,
       subject,
       text,

@@ -2,9 +2,16 @@ const mongoose = require("mongoose");
 const { sendEmail } = require("../config/emailProvider");
 const { connectRabbitMQ } = require("../config/rabbitmq");
 const User = require("../models/user");
-
 const { Client } = require('@elastic/elasticsearch');
-const esClient = new Client({ node: process.env.ELASTICSEARCH_URL });
+
+
+const esClient = new Client({
+  node: process.env.ELASTICSEARCH_URI,
+  auth: {
+    apiKey: process.env.ELASTICSEARCH_API_KEY 
+  }
+});
+
 
 // Function to fetch the product quantity from Elasticsearch
 const getProductQuantityFromES = async (title) => {

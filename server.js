@@ -7,18 +7,33 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const app = express();
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Failed to connect to MongoDB:", err.message));
+// Async function to initialize the server
+async function startServer() {
+  try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Connected to MongoDB");
 
-// Routes
-app.use("/notifications", notificationRoutes);
+    // Initialize RabbitMQ Consumers
+    await initConsumer();
+    console.log("RabbitMQ consumer initialized");
 
-// Initialize RabbitMQ Consumers
-initConsumer();
+    // Routes
+    app.use("/notifications", notificationRoutes);
 
-const PORT = process.env.PORT || 7000;
-app.listen(PORT, () => {
-  console.log(`Notification microservice running on port ${PORT}`);
-});
+    // Alive check route
+    app.get('/alive', (req, res) => {
+      res.status(200).json({ message: 'Notifications service is alive' });
+    });
+
+    const PORT = process.env.PORT || 7000;
+    app.listen(PORT, () => {
+      console.log(`Notification microservice running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start the server:", err.message);
+    process.exit(1); 
+  }
+}
+
+startServer();
